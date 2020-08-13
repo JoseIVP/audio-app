@@ -1,0 +1,16 @@
+#bars {
+    width: 100%;
+    height: 400px;
+    background-color: rgb(82, 82, 82);
+    margin-top: 20px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.bar{
+    flex-grow: 1;
+    width: 10px;
+    margin: 2px;
+    height: 30px;
+    background-color: red;
+}
