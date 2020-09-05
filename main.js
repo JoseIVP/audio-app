@@ -46,7 +46,7 @@ function initBars() {
         barContainer.appendChild(bar);
         // Add a tag for the bar with its middle frequency
         const barTag = document.createElement("div");
-        barTag.textContent = Math.round((i + 1) * frequencyWidth - frequencyWidth / 2)  + "Hz";
+        barTag.textContent = Math.round(i * frequencyWidth + frequencyWidth / 2)  + "Hz";
         barTag.className = "bar-tag";
         bottomAxis.appendChild(barTag);
     }
