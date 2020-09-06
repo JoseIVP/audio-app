@@ -1,4 +1,4 @@
-// Fast Fourier Transform size (FFT) (Number of bins in wich the FFT collects
+// Fast Fourier Transform (FFT) size (Number of bins in wich the FFT collects
 // frequencies, each bin represents a frequency spectrum or range)
 const FFT_SIZE = 128;
 // Number of audio samples per second gotten by the microphone (This
@@ -87,11 +87,11 @@ async function play(){
                 barSytle.height = (MIN_BAR_HEIGHT + (fr - MIN_FLOAT_DECIBELS) / decibelRange * barHeightRange) + "px";
         }
         // Call the function itself to calculate the next frame
-        requestAnimationFrame(animate)
+        requestAnimationFrame(animate);
     }
 
     // Use the previously defined function to start the animation
-    requestAnimationFrame(animate)
+    requestAnimationFrame(animate);
 }
 
 
