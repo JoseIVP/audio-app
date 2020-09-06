@@ -1,3 +1,6 @@
+// Here we import the module of ourt web components
+import "./BarPlot.js";
+
 // Fast Fourier Transform (FFT) size (Number of bins in wich the FFT collects
 // frequencies, each bin represents a frequency spectrum or range)
 const FFT_SIZE = 128;
@@ -21,41 +24,30 @@ const MIN_FLOAT_DECIBELS = -100;
  * the end of the file.
  */
 function main(){
-    initBars();
+    initPlots();
     const btn = document.getElementById("start-btn");
     btn.addEventListener("click", play); 
 }
 
 
 /**
- * Initializes the bar plot visualization, adding the bars and
- * their tags to the document.
+ * Initializes the plots.
  */
-function initBars() {
-    const barContainer = document.getElementById("bars");
-    const bottomAxis = document.getElementById("bottom-axis");
-    // The number of frequencies obtained is always half the FFT size,
-    // this has to do with the way the FFT is computed. 
-    const numberOfBars = FFT_SIZE / 2;
-    // Width in frequency for each bar:
-    const frequencyWidth = SAMPLE_RATE / FFT_SIZE;
-    // Add bars and tags for the plot:
-    for(let i = 0; i < numberOfBars; i++){
-        const bar = document.createElement("div");
-        bar.className = "bar";
-        barContainer.appendChild(bar);
-        // Add a tag for the bar with its middle frequency
-        const barTag = document.createElement("div");
-        barTag.textContent = Math.round(i * frequencyWidth + frequencyWidth / 2)  + "Hz";
-        barTag.className = "bar-tag";
-        bottomAxis.appendChild(barTag);
-    }
+function initPlots() {
+    // Here is an example
+    // const barPlot = document.getElementById("bar-plot");
+    // barPlot.init({
+    //     fftSize: FFT_SIZE,
+    //     sampleRate: SAMPLE_RATE,
+    //     minBarHeight: MIN_BAR_HEIGHT,
+    //     maxBarHeight: MAX_BAR_HEIGHT,
+    // });
 }
 
 
 /**
  * Starts the gathering of sound from the microphone and
- * starts the bar plot animation.
+ * starts the plot animations.
  */
 async function play(){
     const ctx = new window.AudioContext({ sampleRate: SAMPLE_RATE });
@@ -70,23 +62,21 @@ async function play(){
     const decibelRange = MAX_FLOAT_DECIBELS - MIN_FLOAT_DECIBELS;
     const barHeightRange = MAX_BAR_HEIGHT - MIN_BAR_HEIGHT;
     const barContainer = document.getElementById("bars");
+
+    // Here we should get the plots from the document
+    // const barPlot = document.getElementById("bar-plot");
+    // const linePlot = document.getElementById("line-plot");
     
     /**
      * Animates the bars of the plot.
      */
     function animate(){
         analyzerNode.getFloatFrequencyData(frArr);
-        // Change the height of each bar based on the frequencies obtained:
-        for(let i = 0; i < analyzerNode.frequencyBinCount; i++){
-            const fr = frArr[i];
-            const barSytle = barContainer.children[i].style;
-            if (fr < MIN_FLOAT_DECIBELS)
-                barSytle.height = MIN_BAR_HEIGHT + "px";
-            else if (fr > MAX_FLOAT_DECIBELS)
-                barSytle.height = MAX_BAR_HEIGHT + "px";
-            else
-                barSytle.height = (MIN_BAR_HEIGHT + (fr - MIN_FLOAT_DECIBELS) / decibelRange * barHeightRange) + "px";
-        }
+        
+        // Here we should update the plots:
+        // barPlot.update(frArr);
+        // linePlot.update(frArr);
+
         // Call the function itself to calculate the next frame
         requestAnimationFrame(animate);
     }
