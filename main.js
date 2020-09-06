@@ -33,14 +33,16 @@ function main(){
  * Initializes the plots.
  */
 function initPlots() {
-    // Here is an example
-    // const barPlot = document.getElementById("bar-plot");
-    // barPlot.init({
-    //     fftSize: FFT_SIZE,
-    //     sampleRate: SAMPLE_RATE,
-    //     minBarHeight: MIN_BAR_HEIGHT,
-    //     maxBarHeight: MAX_BAR_HEIGHT,
-    // });
+    // Initialize the bar plot:
+    const barPlot = document.getElementById("bar-plot");
+    barPlot.init({
+        FFT_SIZE,
+        SAMPLE_RATE,
+        MIN_BAR_HEIGHT,
+        MAX_BAR_HEIGHT,
+        MIN_FLOAT_DECIBELS,
+        MAX_FLOAT_DECIBELS
+    });
 }
 
 
@@ -63,7 +65,7 @@ async function play(){
     const barContainer = document.getElementById("bars");
 
     // Here we should get the plots from the document
-    // const barPlot = document.getElementById("bar-plot");
+    const barPlot = document.getElementById("bar-plot");
     // const linePlot = document.getElementById("line-plot");
     
     /**
@@ -73,7 +75,7 @@ async function play(){
         analyzerNode.getFloatFrequencyData(frArr);
         
         // Here we should update the plots:
-        // barPlot.update(frArr);
+        barPlot.update(frArr);
         // linePlot.update(frArr);
 
         // Call the function itself to calculate the next frame
