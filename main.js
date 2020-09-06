@@ -8,6 +8,7 @@ const FFT_SIZE = 128;
 // frequency of interest)
 const SAMPLE_RATE = 44100; // This means the highest measured frequency will be around 22050 Hz
 // Range of sizes for the bars of the plot
+const F_BIN_COUNT = 124;
 const MAX_BAR_HEIGHT = 400;
 const MIN_BAR_HEIGHT = 30;
 // Range of decibels to measure for each frequency
