@@ -1,110 +1,116 @@
+
+
+function createSVGElement(name){
+    return document.createElementNS("http://www.w3.org/2000/svg", name);
+}
+
 class BarPlot extends HTMLElement{
+    
     constructor(){
         super();
+        this.maxHeight = 60;
+        this.minHeight = 8;
+        this.barCount = 14;
         this.attachShadow({ mode: 'open'});
-        this.shadowRoot.innerHTML = `
-            <style>
-                .bars {
-                    width: 100%;
-                    height: 400px;
-                    background-color: rgb(82, 82, 82);
-                    margin-top: 20px;
-                    display: flex;
-                    align-items: flex-end;
-                }
-                
-                .bar {
-                    flex-grow: 1;
-                    width: 10px;
-                    margin: 2px;
-                    height: 30px;
-                    background-color: rgb(0, 255, 242);
-                }
-                
-                .bottom-axis {
-                    height: 200px;
-                    width: 100%;
-                    display: flex;
-                }
-                
-                .bar-tag {
-                    width: 10px;
-                    flex-grow: 1;
-                    transform: translate(-60px, 0) rotate(45deg);
-                }
-            </style>
-            <div class="bars"></div>
-            <div class="bottom-axis"></div>
-        `;
+        this._initialRender();
         this.barContainer = this.shadowRoot.querySelector(".bars");
     }
 
-    /**
-     * Initialize the initial state of the visualization, calculating
-     * the number and width of the bars, and the tags below each one.
-     * @param {Object} options - Options to initialize the plot.
-     */
-    init({
-        FFT_SIZE,
-        SAMPLE_RATE,
-        MIN_BAR_HEIGHT,
-        MAX_BAR_HEIGHT,
-        MIN_FLOAT_DECIBELS,
-        MAX_FLOAT_DECIBELS
-    }){
-        this.MIN_BAR_HEIGHT =  MIN_BAR_HEIGHT;
-        this.MAX_BAR_HEIGHT = MAX_BAR_HEIGHT;
-        this.MIN_FLOAT_DECIBELS = MIN_FLOAT_DECIBELS;
-        this.MAX_FLOAT_DECIBELS = MAX_FLOAT_DECIBELS;
-        this.frequencyBinCount = FFT_SIZE / 2;
-        this.decibelRange = MAX_FLOAT_DECIBELS - MIN_FLOAT_DECIBELS;
-        this.barHeightRange = MAX_BAR_HEIGHT - MIN_BAR_HEIGHT;
+    setBars(barTags){
         const bottomAxis = this.shadowRoot.querySelector(".bottom-axis");
-        // The number of frequencies obtained is always half the FFT size,
-        // this has to do with the way the FFT is computed. 
-        const numberOfBars = FFT_SIZE / 2;
-        // Width in frequency for each bar:
-        const frequencyWidth = SAMPLE_RATE / FFT_SIZE;
-        // Add bars and tags for the plot:
-        for(let i = 0; i < numberOfBars; i++){
-            const bar = document.createElement("div");
-            bar.className = "bar";
+        bottomAxis.innerHTML = "";
+        for(let i=0; i<this.barCount; i++){
+            // Create a bar
+            const bar = createSVGElement("rect");
+            bar.setAttribute("class", "bar");
+            bar.setAttribute("width", 8);
+            bar.setAttribute("height", 8);
+            bar.setAttribute("x", 10 * i);
             this.barContainer.appendChild(bar);
-            // Add a tag for the bar with its middle frequency
-            const barTag = document.createElement("div");
-            barTag.textContent = Math.round(i * frequencyWidth + frequencyWidth / 2)  + "Hz";
-            barTag.className = "bar-tag";
+            // Add a tag for the bar
+            const barTag = createSVGElement("text");
+            barTag.textContent = barTags[i];
+            barTag.setAttribute("class", "tag");
+            barTag.setAttribute("transform", `translate(${10 * i}) rotate(45)`);
             bottomAxis.appendChild(barTag);
         }
     }
     
-    /**
-     * Updates the bars of the plot according to the frequencies
-     * in frArr.
-     * @param {Float32Array} frArr - The array of frequencies.
-     */
-    update(frArr){
+    update(data, maxValue, minValue){
         const {
-            MIN_FLOAT_DECIBELS,
-            MAX_FLOAT_DECIBELS,
-            MIN_BAR_HEIGHT,
-            MAX_BAR_HEIGHT,
-            decibelRange,
-            barHeightRange,
-            frequencyBinCount,
-            barContainer
+            minHeight: minHeight,
+            maxHeight: maxHeight
         } = this;
-        // Update each bar according to its corresponding frequency.
-        for(let i = 0; i < frequencyBinCount; i++){
-            const fr = frArr[i];
-            const barSytle = barContainer.children[i].style;
-            if (fr < MIN_FLOAT_DECIBELS)
-                barSytle.height = MIN_BAR_HEIGHT + "px";
-            else if (fr > MAX_FLOAT_DECIBELS)
-                barSytle.height = MAX_BAR_HEIGHT + "px";
+        const heightDiff = maxHeight - minHeight;
+        const valueDiff = maxValue - minValue;
+        for(let i=0; i<this.barCount; i++){
+            const d = data[i];
+            let height = null;
+            if (d < minValue)
+                height = minHeight;
+            else if (d > maxValue)
+                height = maxHeight;
             else
-                barSytle.height = (MIN_BAR_HEIGHT + (fr - MIN_FLOAT_DECIBELS) / decibelRange * barHeightRange) + "px";
+                height = (minHeight + (d - minValue) / valueDiff * heightDiff);
+            this.barContainer.children[i].setAttribute("height", height);
         }
+    }
+
+    _initialRender(){
+        this.shadowRoot.innerHTML = `
+        <style>
+            *{
+                padding: 0;
+                margin: 0;
+                border: 0;
+            }
+
+            svg{
+                display: block;
+                margin: 2rem auto;
+                width: 100vw;
+                height: calc(100vw * 9 / 16);
+                max-width: 1000px;
+                max-height: calc(1000px * 9 / 16);
+                background-color: rgb(21 32 43);
+                box-sizing: border-box;
+                border-radius: 5px;
+                box-shadow: 0px 0px 20px rgb(21 32 43);
+            }
+
+            .bar{
+                fill: rgb(21 32 43);
+                stroke-width: 0.5;
+                stroke: rgb(66 161 242);
+                rx: 1;
+                ry: 1;
+            }
+
+            .tag{
+                font-size: 4px;
+                font-family: Helvetica;
+                font-weight: bold;
+                fill: rgb(66 161 242);
+            }
+
+
+        </style>
+
+        <svg
+            viewBox="0 0 160 90"
+        >   
+            <g
+                class="bars"
+                transform="translate(10, 66) scale(1,-1)"
+            >
+            </g>
+            <g
+                class="bottom-axis"
+                transform="translate(11, 71)"
+            >
+            </g>
+        </svg>
+        `;
     }
 }
 
