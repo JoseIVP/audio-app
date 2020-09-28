@@ -49,7 +49,7 @@ class BarPlot extends HTMLElement{
      * setBars(). The arguments maxValue and minValue will respectively
      * translate to the maximum and minimum possible values for the
      * heights of the bars. 
-     * @param {Array} data - The array of values
+     * @param {Array} data - The array of values.
      * @param {number} maxValue - The maximum possible value to plot.
      * @param {number} minValue - The minimum possible value to plot.
      */
@@ -110,10 +110,7 @@ class BarPlot extends HTMLElement{
                 font-weight: bold;
                 fill: rgb(66 161 242);
             }
-
-
         </style>
-
         <svg
             viewBox="0 0 160 90"
         >   
