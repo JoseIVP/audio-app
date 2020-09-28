@@ -1,9 +1,10 @@
-
-
 function createSVGElement(name){
     return document.createElementNS("http://www.w3.org/2000/svg", name);
 }
 
+/**
+ * A class for a web component that represents a bar plot.
+ */
 class BarPlot extends HTMLElement{
     
     constructor(){
@@ -16,9 +17,14 @@ class BarPlot extends HTMLElement{
         this.barContainer = this.shadowRoot.querySelector(".bars");
     }
 
+    /**
+     * Adds as many vertical bars as elements in barTags to the plot,
+     * and puts below each bar its corresponding tag.
+     * @param {Array} barTags - An array of strings as tags for the bars.
+     */
     setBars(barTags){
         const bottomAxis = this.shadowRoot.querySelector(".bottom-axis");
-        bottomAxis.innerHTML = "";
+        bottomAxis.innerHTML = ""; // Remove any childs
         for(let i=0; i<this.barCount; i++){
             // Create a bar
             const bar = createSVGElement("rect");
@@ -36,6 +42,17 @@ class BarPlot extends HTMLElement{
         }
     }
     
+    /**
+     * Updates the heights of the bars of the plot according to the
+     * values in data. The values to take from the begining of data
+     * are as many as the number of vertical bars previously set by
+     * setBars(). The arguments maxValue and minValue will respectively
+     * translate to the maximum and minimum possible values for the
+     * heights of the bars. 
+     * @param {Array} data - The array of values
+     * @param {number} maxValue - The maximum possible value to plot.
+     * @param {number} minValue - The minimum possible value to plot.
+     */
     update(data, maxValue, minValue){
         const {
             minHeight: minHeight,
@@ -57,6 +74,7 @@ class BarPlot extends HTMLElement{
     }
 
     _initialRender(){
+        // The plot considers a 16:9 aspect ratio.
         this.shadowRoot.innerHTML = `
         <style>
             *{
