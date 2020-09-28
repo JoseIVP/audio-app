@@ -5,14 +5,26 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#start-btn{
-    padding: 1em;
+button{
     font-size: 1.2rem;
-    font-weight: bold;
-    display: block;
-    width: 20ch;
-    margin: 2rem auto;
-    border-radius: 5px;
+    padding: 1em;
     color: rgb(66 161 242);
     background-color: rgb(21 32 43);
+    outline: none;
+    border-radius: 0.3em;
+    transition: box-shadow .15s,
+        background-color .15s;
+}
+
+button:focus{
+    box-shadow: 0 0 0 0.25em rgb(21 32 43 / 0.5);
+}
+
+button:hover, button:active{
+    background-color: black;
+}
+
+#start-btn{
+    display: block;
+    margin: 2rem auto;
 }
