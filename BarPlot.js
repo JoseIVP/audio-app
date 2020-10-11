@@ -24,7 +24,7 @@ class BarPlot extends HTMLElement{
      */
     setBars(barTags){
         const bottomAxis = this.shadowRoot.querySelector(".bottom-axis");
-        // Remove any previous childs
+        // Remove any previous children
         bottomAxis.innerHTML = "";
         this.barContainer.innerHTML = "";
         for(let i=0; i<this.barCount; i++){
