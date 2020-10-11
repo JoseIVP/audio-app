@@ -24,7 +24,9 @@ class BarPlot extends HTMLElement{
      */
     setBars(barTags){
         const bottomAxis = this.shadowRoot.querySelector(".bottom-axis");
-        bottomAxis.innerHTML = ""; // Remove any childs
+        // Remove any previous childs
+        bottomAxis.innerHTML = "";
+        this.barContainer.innerHTML = "";
         for(let i=0; i<this.barCount; i++){
             // Create a bar
             const bar = createSVGElement("rect");
