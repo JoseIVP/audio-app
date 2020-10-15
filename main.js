@@ -11,7 +11,7 @@ const FFT_SIZE = 128;
 // represented if sampled at least twice the rate of the highest
 // frequency of interest)
 const SAMPLE_RATE = 44100; // This means the highest measured frequency will be around 22050 Hz
-
+let IS_PLAYING = false; // true if playing animations and recording from mic
 
 /**
  * Main function of the module/script. This is executed at
@@ -20,7 +20,21 @@ const SAMPLE_RATE = 44100; // This means the highest measured frequency will be 
 function main(){
     initPlots();
     const btn = document.getElementById("start-btn");
-    btn.addEventListener("click", play); 
+    const help = document.getElementById("help-text");
+    btn.addEventListener("click", () => {
+        // Toggle the animations and sound recording
+        IS_PLAYING = !IS_PLAYING;
+        if (IS_PLAYING){
+            btn.textContent = "Detener";
+            btn.className= "active";
+            help.textContent = "detener";
+            play();
+        }else{
+            btn.textContent = "Comenzar";
+            btn.className = "";
+            help.textContent = "iniciar";
+        }
+    }); 
 }
 
 
@@ -78,6 +92,15 @@ async function play(){
      * Animates the bars of the plot.
      */
     function animate(){
+        if (!IS_PLAYING){
+            // Stop microphone
+            const tracks = srcStream.getAudioTracks();
+            for(const track of tracks)
+                track.stop();
+            // Reset bar plot
+            barPlot.setBars(makeBarPlotTags());
+            return; // Stop requesting frames
+        }
         analyzerNode.getFloatFrequencyData(frArr);
         
         // Here we should update the plots:
