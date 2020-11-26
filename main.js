@@ -1,22 +1,18 @@
-// Here we import the module of ourt web components
+// Here we import the modules of our web components
 import "./BarPlot.js";
 
 // Fast Fourier Transform (FFT) size (Number of bins in wich the FFT collects
 // frequencies, each bin represents a frequency spectrum or range)
 const FFT_SIZE = 128;
+
 // Number of audio samples per second gotten by the microphone (This
 // is twice the maximum frequency that will be measured, beacause of the
 // "Nyquist Sampling Theorem" which states that any signal can be
 // represented if sampled at least twice the rate of the highest
 // frequency of interest)
 const SAMPLE_RATE = 44100; // This means the highest measured frequency will be around 22050 Hz
-// Range of sizes for the bars of the plot
-const F_BIN_COUNT = 124;
-const MAX_BAR_HEIGHT = 400;
-const MIN_BAR_HEIGHT = 30;
-// Range of decibels to measure for each frequency
-const MAX_FLOAT_DECIBELS = 30;
-const MIN_FLOAT_DECIBELS = -100;
+
+let IS_PLAYING = false; // true if playing animations and recording from mic
 
 
 /**
@@ -26,7 +22,21 @@ const MIN_FLOAT_DECIBELS = -100;
 function main(){
     initPlots();
     const btn = document.getElementById("start-btn");
-    btn.addEventListener("click", play); 
+    const help = document.getElementById("help-text");
+    btn.addEventListener("click", () => {
+        // Toggle the animations and sound recording
+        IS_PLAYING = !IS_PLAYING;
+        if (IS_PLAYING){
+            btn.textContent = "Detener";
+            btn.className= "active";
+            help.textContent = "detener";
+            play();
+        }else{
+            btn.textContent = "Comenzar";
+            btn.className = "";
+            help.textContent = "iniciar";
+        }
+    }); 
 }
 
 
@@ -34,14 +44,26 @@ function main(){
  * Initializes the plots.
  */
 function initPlots() {
-    // Here is an example
-    // const barPlot = document.getElementById("bar-plot");
-    // barPlot.init({
-    //     fftSize: FFT_SIZE,
-    //     sampleRate: SAMPLE_RATE,
-    //     minBarHeight: MIN_BAR_HEIGHT,
-    //     maxBarHeight: MAX_BAR_HEIGHT,
-    // });
+    // Initialize the bar plot:
+    const barPlot = document.getElementById("bar-plot");
+    barPlot.setBars(makeBarPlotTags());
+}
+
+
+/**
+ * Makes an array of strings as tags for the bar plot.
+ */
+function makeBarPlotTags(){
+    const tags = [];
+    // Width in frequency for each bar
+    const frequencyWidth = SAMPLE_RATE / FFT_SIZE;
+    // We will only plot the first 14 frequencies
+    // returned by the FFT in the bar plot.
+    for(let i=0; i<14; i++){
+        const tag = Math.round(i * frequencyWidth + frequencyWidth / 2)  + "Hz";
+        tags.push(tag);
+    }
+    return tags;
 }
 
 
@@ -59,22 +81,32 @@ async function play(){
     analyzerNode.fftSize = FFT_SIZE;
     // Array to store frequencies from the FFT
     const frArr = new Float32Array(FFT_SIZE / 2);
-    const decibelRange = MAX_FLOAT_DECIBELS - MIN_FLOAT_DECIBELS;
-    const barHeightRange = MAX_BAR_HEIGHT - MIN_BAR_HEIGHT;
-    const barContainer = document.getElementById("bars");
 
     // Here we should get the plots from the document
-    // const barPlot = document.getElementById("bar-plot");
+    const barPlot = document.getElementById("bar-plot");
     // const linePlot = document.getElementById("line-plot");
     
+    // Max and min values to plot in the bar plot
+    const maxValue = 10;
+    const minValue = -100;
+
     /**
      * Animates the bars of the plot.
      */
     function animate(){
+        if (!IS_PLAYING){
+            // Stop microphone
+            const tracks = srcStream.getAudioTracks();
+            for(const track of tracks)
+                track.stop();
+            // Reset bar plot
+            barPlot.setBars(makeBarPlotTags());
+            return; // Stop requesting frames
+        }
         analyzerNode.getFloatFrequencyData(frArr);
         
         // Here we should update the plots:
-        // barPlot.update(frArr);
+        barPlot.update(frArr, maxValue, minValue);
         // linePlot.update(frArr);
 
         // Call the function itself to calculate the next frame
