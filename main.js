@@ -1,5 +1,7 @@
 // Here we import the modules of our web components
 import "./BarPlot.js";
+import LinePlot from "./LinePlot.js"
+customElements.define("line-plot", LinePlot);
 
 // Fast Fourier Transform (FFT) size (Number of bins in wich the FFT collects
 // frequencies, each bin represents a frequency spectrum or range)
