@@ -86,7 +86,7 @@ async function play(){
 
     // Here we should get the plots from the document
     const barPlot = document.getElementById("bar-plot");
-    // const linePlot = document.getElementById("line-plot");
+    const linePlot = document.querySelector("line-plot");
     
     // Max and min values to plot in the bar plot
     const maxValue = 10;
@@ -108,8 +108,10 @@ async function play(){
         analyzerNode.getFloatFrequencyData(frArr);
         
         // Here we should update the plots:
+
         barPlot.update(frArr, maxValue, minValue);
-        // linePlot.update(frArr);
+        
+        linePlot.updateGraph((frArr.indexOf(Math.max(...frArr))+1)*(SAMPLE_RATE / FFT_SIZE));
 
         // Call the function itself to calculate the next frame
         requestAnimationFrame(animate);
@@ -119,6 +121,7 @@ async function play(){
     requestAnimationFrame(animate);
 }
 
+  
 
 // Start the script
 main();

@@ -8,16 +8,13 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
+    
     <p>Haz click sobre el botón para <span id="help-text">inciar</span> la animación.</p>
     <button id="start-btn" type="button">Comenzar</button>
-    <div id="bars"></div>
-    <div id="graph" style="width:600px;height:250px;"></div>
-
-
+    <line-plot></line-plot>
+    <bar-plot id="bar-plot"></bar-plot>
     
     <!-- Here we should add our web components -->
-    <bar-plot id="bar-plot"></bar-plot>\
-    <line-plot></line-plot>
     
     <script type="module" src="./main.js"></script>
 

@@ -7,12 +7,16 @@ export default class LinePlot extends HTMLElement{
     
     constructor(){
         super();
+        Chart.defaults.global.animation.duration = 0;
         this.attachShadow({ mode: 'open'});
         this._initialRender();
         this.canvas = this.shadowRoot.querySelector("#myChart");
-        this.largo_eje_x=500;
+        this.largo_eje_x=100;
         this.datos=[]
         this.labels= []
+        for(let i=0;i<this.largo_eje_x;i++){
+            this.labels.push("");
+        }
         this.myChart = new Chart(this.canvas, {
             type: 'line',
             data: {
@@ -20,22 +24,9 @@ export default class LinePlot extends HTMLElement{
                 datasets: [{
                     label: '# of Votes',
                     data: this.datos,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
+                    backgroundColor: 'rgb(21 32 43)',
+                    borderColor:'rgb(66 161 242)',
+                    
                     borderWidth: 1
                 }]
             },
@@ -51,16 +42,6 @@ export default class LinePlot extends HTMLElement{
         });
         const tiempoEnMilisegundos=100
         
-        setInterval(() => { const num=Math.random()*22050;
-                            this.datos.push(num);
-                            this.labels.push("");
-                            if(this.datos.length>this.largo_eje_x){
-                                this.labels.shift();
-                                this.datos.shift();
-                            } 
-                            this.myChart.update();
-                            },  
-                            tiempoEnMilisegundos);
             
     }
 
@@ -83,5 +64,14 @@ export default class LinePlot extends HTMLElement{
             <canvas id="myChart" width="400" height="200"></canvas>
         </div>
         `;
+    }
+    updateGraph(num){
+        this.datos.push(num);
+        //this.labels.push("");
+        if(this.datos.length>this.largo_eje_x){
+            //this.labels.shift();
+            this.datos.shift();
+        } 
+        this.myChart.update();
     }
 }
