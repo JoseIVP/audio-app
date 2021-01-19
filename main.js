@@ -5,7 +5,7 @@ customElements.define("line-plot", LinePlot);
 
 // Fast Fourier Transform (FFT) size (Number of bins in wich the FFT collects
 // frequencies, each bin represents a frequency spectrum or range)
-const FFT_SIZE = 128;
+const FFT_SIZE = 16384;
 
 // Number of audio samples per second gotten by the microphone (This
 // is twice the maximum frequency that will be measured, beacause of the
