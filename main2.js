@@ -15,6 +15,7 @@ const mlComputer = new MLComputer();
 let selectedComputer = fourierComputer; // To compute pitch
 const animation = new AnimationCicle();
 animation.onPlay = () =>{
+    // fourierComputer must be on to display the bar plot
     fourierComputer.play();
     selectedComputer.play();
 }
@@ -50,19 +51,3 @@ computerSelect.onchange = () => {
         selectedComputer.play();
     }
 };
-
-
-class ComputerInterface {
-
-    play(){
-        throw new Error("Interface method not implemented");
-    }
-
-    stop(){
-        throw new Error("Interface method not implemented");
-    }
-    
-    getMaxFrequency(){
-        throw new Error("Interface method not implemented");
-    }
-}

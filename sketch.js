@@ -29,12 +29,7 @@ function modelLoaded() {
 }
 
 function getPitch() {
-  pitch.getPitch(function(err, frequency) {
-    if (frequency) {
-      select('#result').html(frequency);
-    } else {
-      select('#result').html('No pitch detected');
-    }
-    getPitch();
-  })
+    pitch.getPitch(function(err, frequency) {
+      select('#status').html(`La frecuencia es ${frequency}`);
+    });
 }
