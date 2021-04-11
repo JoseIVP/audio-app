@@ -1,5 +1,4 @@
 import ComputerInterface from "./../ComputerInterface.js";
-// TODO: Remove unused librearies
 import "https://unpkg.com/ml5@latest/dist/ml5.min.js";
 
 
