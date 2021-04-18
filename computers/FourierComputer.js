@@ -14,7 +14,7 @@ const SAMPLE_RATE = 44100; // This means the highest measured frequency will be 
 
 export default class FourierComputer extends ComputerInterface{
 
-    play(){
+    async play(){
         if(this.isPlaying)
             return;
         const ctx = new window.AudioContext({ sampleRate: SAMPLE_RATE });
@@ -41,14 +41,15 @@ export default class FourierComputer extends ComputerInterface{
      * @returns {Promise}
      * @override
      */
-    getMaxFrequency(){
+    async getMaxFrequency(){
         this.analyzerNode.getFloatFrequencyData(this.frequencyArray);
         let max = 0;
         for(let i=0; i<this.frequencyArray.length; i++){
-            if(this.frequencyArray[i]>this.frequencyArray[max])
-                max = i;
-        }
-        return max;
+             if(this.frequencyArray[i]>this.frequencyArray[max])
+                 max = i;
+         }
+        // (SAMPLE_RATE / FFT_SIZE) = size of interval in Hz
+        return max*(SAMPLE_RATE / FFT_SIZE);
     }
 
     getFrequencyArray(){

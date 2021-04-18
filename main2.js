@@ -24,9 +24,9 @@ animation.onStop = () => {
     selectedComputer.stop();
 }
 
-animation.onUpdate = () =>{
+animation.onUpdate = async () =>{
     barPlot.update(fourierComputer.getFrequencyArray());
-    linePlot.update(selectedComputer.getMaxFrequency());
+    linePlot.update(await selectedComputer.getMaxFrequency());
 };
 
 const playBtn = document.getElementById("play-btn");
