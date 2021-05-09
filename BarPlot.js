@@ -2,10 +2,14 @@ function createSVGElement(name){
     return document.createElementNS("http://www.w3.org/2000/svg", name);
 }
 
+// Same values as FourierComputer.js
+const FFT_SIZE = 2**14;
+const SAMPLE_RATE = 44100;
+
 /**
  * A class for a web component that represents a bar plot.
  */
-class BarPlot extends HTMLElement{
+export default class BarPlot extends HTMLElement{
     
     constructor(){
         super();
@@ -15,6 +19,7 @@ class BarPlot extends HTMLElement{
         this.attachShadow({ mode: 'open'});
         this._initialRender();
         this.barContainer = this.shadowRoot.querySelector(".bars");
+        this._setBars(this._makeBarPlotTags());
     }
 
     /**
@@ -22,7 +27,7 @@ class BarPlot extends HTMLElement{
      * and puts below each bar its corresponding tag.
      * @param {Array} barTags - An array of strings as tags for the bars.
      */
-    setBars(barTags){
+    _setBars(barTags){
         const bottomAxis = this.shadowRoot.querySelector(".bottom-axis");
         // Remove any previous children
         bottomAxis.innerHTML = "";
@@ -43,6 +48,22 @@ class BarPlot extends HTMLElement{
             bottomAxis.appendChild(barTag);
         }
     }
+
+    /**
+     * Makes an array of strings as tags for the bar plot.
+     */
+    _makeBarPlotTags(){
+        const tags = [];
+        // Width in frequency for each bar
+        const frequencyWidth = SAMPLE_RATE / FFT_SIZE;
+        // We will only plot the first 14 frequencies
+        // returned by the FFT in the bar plot.
+        for(let i=0; i<14; i++){
+            const tag = Math.round(i * frequencyWidth + frequencyWidth / 2)  + "Hz";
+            tags.push(tag);
+        }
+        return tags;
+    }
     
     /**
      * Updates the heights of the bars of the plot according to the
@@ -55,7 +76,9 @@ class BarPlot extends HTMLElement{
      * @param {number} maxValue - The maximum possible value to plot.
      * @param {number} minValue - The minimum possible value to plot.
      */
-    update(data, maxValue, minValue){
+    update(data){
+        const maxValue = 10;
+        const minValue = -100;
         const {
             minHeight: minHeight,
             maxHeight: maxHeight
@@ -130,5 +153,3 @@ class BarPlot extends HTMLElement{
         `;
     }
 }
-
-customElements.define("bar-plot", BarPlot);

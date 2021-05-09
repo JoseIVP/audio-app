@@ -70,6 +70,27 @@ export default class LinePlot extends HTMLElement{
         
             
     }
+
+    _initialRender(){
+        this.shadowRoot.innerHTML = `
+        <style>
+        #line_chart_container{
+            width:100%;
+            max-width:1000px;
+            margin:30px auto;
+            background-color: rgb(21 32 43);
+            border-radius: 5px;
+            box-shadow: 0px 0px 20px rgb(21 32 43);
+            box-sizing: border-box;
+            padding: 20px;
+        }
+        </style>
+        <div id="line_chart_container">
+            <canvas id="myChart" width="400" height="200"></canvas>
+        </div>
+        `;
+    }
+
     /**
      * find closest element in an ascending ordered array
      * @param {number} num - An array of numbers
@@ -92,32 +113,8 @@ export default class LinePlot extends HTMLElement{
         }
         return arr[hi];
     }
-    /**
-     * Adds as many vertical bars as elements in barTags to the plot,
-     * and puts below each bar its corresponding tag.
-     * @param {Array} barTags - An array of strings as tags for the bars.
-     */
-    setBars(barTags){}
-    _initialRender(){
-        this.shadowRoot.innerHTML = `
-        <style>
-        #line_chart_container{
-            width:100%;
-            max-width:1000px;
-            margin:30px auto;
-            background-color: rgb(21 32 43);
-            border-radius: 5px;
-            box-shadow: 0px 0px 20px rgb(21 32 43);
-            box-sizing: border-box;
-            padding: 20px;
-        }
-        </style>
-        <div id="line_chart_container">
-            <canvas id="myChart" width="400" height="200"></canvas>
-        </div>
-        `;
-    }
-    updateGraph(num){
+
+    update(num){
         this.datos.push(num);
         //this.labels.push("");
         if(this.datos.length>this.largo_eje_x){
