@@ -15,20 +15,17 @@ const mlComputer = new MLComputer();
 let selectedComputer = fourierComputer; // To compute pitch
 const animation = new AnimationCicle();
 
-animation.onStop = () => {
-    fourierComputer.stop();
-    selectedComputer.stop();
-}
-
-animation.onUpdate = () =>{
+animation.onUpdate = async () =>{
     barPlot.update(fourierComputer.getFrequencyArray());
-    linePlot.update(selectedComputer.getMaxFrequency());
+    linePlot.update(await selectedComputer.getMaxFrequency());
 };
 
 const playBtn = document.getElementById("play-btn");
 playBtn.onclick = async () => {
     if(animation.isPlaying()){
         animation.stop();
+        fourierComputer.stop();
+        selectedComputer.stop();
     }else{
         await fourierComputer.play();
         await selectedComputer.play();
@@ -42,7 +39,8 @@ computerSelect.onchange = () => {
     switch(computerSelect.value){
         case "Fourier":
             selectedComputer = fourierComputer;
-        case "MachineLearnig":
+            break;
+        case "MachineLearning":
             selectedComputer = mlComputer;
     }
     if(animation.isPlaying()){

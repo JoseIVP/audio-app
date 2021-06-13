@@ -14,6 +14,12 @@ const SAMPLE_RATE = 44100; // This means the highest measured frequency will be 
 
 export default class FourierComputer extends ComputerInterface{
 
+    /**
+     * Starts listening and processing audio.
+     * @returns {Promise} - A promise that is resolved once the computer starts
+     * playing.
+     * @override
+     */
     async play(){
         if(this.isPlaying)
             return;
@@ -28,11 +34,19 @@ export default class FourierComputer extends ComputerInterface{
         this.frequencyArray = new Float32Array(FFT_SIZE / 2);
     }
 
-
+    /**
+     * Stops listening and processing audio.
+     * @override
+     */
     stop(){
+        if(!this.isPlaying)
+            return;
         const tracks = this.srcStream.getAudioTracks();
         for(const track of tracks)
             track.stop();
+        this.isPlaying = false;
+        this.srcStream = null;
+        this.analyzerNode = null;
     }
     
     /**
@@ -52,6 +66,11 @@ export default class FourierComputer extends ComputerInterface{
         return max*(SAMPLE_RATE / FFT_SIZE);
     }
 
+    /**
+     * Returns an array of volumes for 2**13 frequencies between 0 and 22050
+     * Hertz.
+     * @returns {Float32Array} - The array of frequency volumes. 
+     */
     getFrequencyArray(){
         const arr = new Float32Array(FFT_SIZE / 2);
         this.analyzerNode.getFloatFrequencyData(arr);

@@ -1,17 +1,8 @@
 export default class AnimationCicle{
-    constructor(){
-        this._playing = false;
-    }
     
-    async onPlay(){
-        console.warn('AnimationCicle.onPlay function not defined');
-        return;
-    }    
-
-    onStop(){
-        console.warn('AnimationCicle.onStop function not defined');
-        return;
-    }
+    constructor(){
+        this._isPlaying = false;
+    }  
 
     onUpdate(){
         console.warn('AnimationCicle.onUpdate function not defined');
@@ -19,13 +10,13 @@ export default class AnimationCicle{
     }
 
     isPlaying(){
-        return this._playing;
+        return this._isPlaying;
     }
 
-    async play(){
+    play(){
         if(this.isPlaying())
             return;
-        this._playing = true;
+        this._isPlaying = true;
         const cicle = () => {
             this.onUpdate()
             if(this.isPlaying())
@@ -37,7 +28,6 @@ export default class AnimationCicle{
     stop(){
         if(!this.isPlaying())
             return;
-        this._playing = false;
-        this.onStop();
+        this._isPlaying = false;
     }
 }
