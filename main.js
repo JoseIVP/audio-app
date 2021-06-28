@@ -1,5 +1,5 @@
-import LinePlot from "./LinePlot.js";
-import BarPlot from "./BarPlot.js";
+import LinePlot from "./components/LinePlot.js";
+import BarPlot from "./components/BarPlot.js";
 import FourierComputer from "./computers/FourierComputer.js";
 import MLComputer from "./computers/MLComputer/MLComputer.js";
 import AnimationCicle from "./AnimationCicle.js";
